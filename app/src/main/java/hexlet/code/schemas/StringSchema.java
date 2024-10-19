@@ -3,13 +3,13 @@ package hexlet.code.schemas;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StringSchema {
-    private boolean required = false;
-    private Integer minLength = null;
-    private List<String> contains = new ArrayList<>();
+public class StringSchema extends BaseSchema<String> {
+    private int minLength = 0;
+    private int maxLength = Integer.MAX_VALUE;
+    private List<String> contains = new ArrayList<>(); // Добавляем список для подстрок
 
     public StringSchema required() {
-        this.required = true;
+        super.required(); // вызываем метод из базового класса
         return this;
     }
 
@@ -23,23 +23,26 @@ public class StringSchema {
         return this;
     }
 
-    public boolean isValid(String data) {
-        if (required) {
-            if (data == null || data.isEmpty()) {
-                return false;
-            }
+    @Override
+    public boolean isValid(String value) {
+        if (!super.isValid(value)) {
+            return false; // Проверка на обязательное поле
         }
 
-        if (minLength != null && (data == null || data.length() < minLength)) {
+        // Если значение null и поле не обязательно
+        if (value == null) {
+            return true;
+        }
+
+        // Проверка на длину строки
+        if (value.length() < minLength) {
             return false;
         }
 
-        for (String substring : contains) {
-            if (data == null || !data.contains(substring)) {
-                return false;
-            }
+        if (value.length() > maxLength) {
+            return false;
         }
 
-        return true;
+            return true;
     }
 }
