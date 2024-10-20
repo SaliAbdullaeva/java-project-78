@@ -29,3 +29,15 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+// Настройка JaCoCo
+jacoco {
+    toolVersion = "0.8.12"
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+}
