@@ -42,7 +42,6 @@ public class StringSchema extends BaseSchema<String> {
         if (value.length() > maxLength) {
             return false;
         }
-
-            return true;
+        return true;
     }
 }

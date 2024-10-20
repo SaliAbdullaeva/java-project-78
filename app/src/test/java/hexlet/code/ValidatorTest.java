@@ -6,7 +6,8 @@ import hexlet.code.schemas.StringSchema;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class ValidatorTest {
 
@@ -69,7 +70,7 @@ public class ValidatorTest {
         assertFalse(schema.isValid(0), "Zero should not be valid when positive constraint is applied");
 
         //Тестирование допустимого диапазона
-        schema.range(0,100);
+        schema.range(0, 100);
         assertFalse(schema.isValid(150), "Values greater than 100 should not be valid");
         assertFalse(schema.isValid(-1), "Values less than 0 should not be valid");
         assertTrue(schema.isValid(50), "Value within range should be valid");
