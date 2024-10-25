@@ -3,7 +3,8 @@ package hexlet.code.schemas;
 import java.util.Map;
 
 public class MapSchema extends BaseSchema<Map> {
-    Integer size;
+    private Integer size;
+    private Map<String, BaseSchema<String>> shapeSchemas;
 
     public MapSchema required() {
         super.required();
@@ -15,6 +16,11 @@ public class MapSchema extends BaseSchema<Map> {
         return this;
     }
 
+    public MapSchema shape(Map<String, BaseSchema<String>> schemas) {
+        this.shapeSchemas = schemas;
+        return this;
+    }
+
     @Override
     public boolean isValid(Map map) {
 
@@ -23,18 +29,29 @@ public class MapSchema extends BaseSchema<Map> {
             return !required;
         }
 
-        // Проверяем базовую валидацию
+        // Если базовая валидация не прошла, возвращаем false
         if (!super.isValid(map)) {
-            return false; // Если базовая валидация не прошла, возвращаем false
+            return false;
         }
 
-        // Если размер не установлен, возвращаем true
-        if (size == null) {
-            return true;
+        // Проверяем, что размер карты соответствует ожидаемому
+        if (size != null && map.size() != size) {
+            return false;
         }
 
-            // Проверяем, что размер карты соответствует ожидаемому
-        return map.size() == size;
+        // Проверяем вложенные схемы, если они заданы
+        if (shapeSchemas != null) {
+            // Получаем все ключи из shapeSchemas
+            for (String key : shapeSchemas.keySet()) {
+                BaseSchema<String> valueSchema = shapeSchemas.get(key); // Получаем значение по ключу
+                Object value = map.get(key);
+
+                // Важное изменение: вызываем isValid для каждого значения, даже если оно null
+                if (!valueSchema.isValid((String) value)) {
+                    return false;
+                }
+            }
+        }
+        return true; // Если все проверки пройдены, возвращаем true
     }
-
 }

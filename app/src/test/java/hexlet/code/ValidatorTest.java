@@ -26,7 +26,7 @@ public class ValidatorTest {
 
     }
 
-// тесты для проверки String схемы
+    // тесты для проверки String схемы
     @Test
     public void testStringValidation() {
         StringSchema schema = validator.string();
@@ -58,7 +58,7 @@ public class ValidatorTest {
         assertTrue(schema.isValid(""), "Empty string should be valid when not required");
     }
 
-// тесты для проверки Number схемы
+    // тесты для проверки Number схемы
     @Test
     public void testNumberValidation() {
         NumberSchema schema = validator.number();
@@ -121,4 +121,37 @@ public class ValidatorTest {
         // Без обязательного поля
         assertTrue(schema.isValid(null), "Null should be valid when not required");
     }
+
+    @Test
+    public void testHumanValidation() {
+        MapSchema schema = validator.map();
+        // Создаем набор схем для проверки каждого ключа проверяемого объекта:
+        Map<String, BaseSchema<String>> schemas = new HashMap<>();
+
+        // Определяем схемы валидации для значений свойств "firstName" и "lastName"
+        schemas.put("firstName", validator.string().required().minLength(3)); // Минимальная длина 3
+        schemas.put("lastName", validator.string().required().minLength(2)); // Минимальная длина 2
+        schema.shape(schemas);
+
+        // Проверяем валидные данные
+        Map<String, String> validHuman = new HashMap<>();
+        validHuman.put("firstName", "John");
+        validHuman.put("lastName", "Smith");
+        assertTrue(schema.isValid(validHuman), "Valid human data should be accepted");
+
+        // Проверяем невалидные данные: lastName = null
+        Map<String, String> invalidHuman1 = new HashMap<>();
+        invalidHuman1.put("firstName", "John");
+        invalidHuman1.put("lastName", null);
+        assertFalse(schema.isValid(invalidHuman1), "Null lastName should not be valid");
+
+        // Проверяем невалидные данные: lastName слишком короткий
+        Map<String, String> invalidHuman2 = new HashMap<>();
+        invalidHuman2.put("firstName", "Anna");
+        invalidHuman2.put("lastName", "B");
+        assertFalse(schema.isValid(invalidHuman2), "LastName shorter than 2 characters should not be valid");
+
+    }
 }
+
+
