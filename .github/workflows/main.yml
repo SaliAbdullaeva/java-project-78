@@ -1,40 +1,27 @@
 name: Java CI
 
-on:
-  push:
-    branches:
-      - main  # Укажите ветки, для которых нужно запускать CI
-      - '**'   # Для запуска на всех ветках (по желанию)
+on: push
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 22
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           java-version: '22'
-          distribution: 'temurin'  # Вы можете оставить это значение, если не используете другой дистрибутив
-
-      - name: Build with Gradle
-        uses: gradle/gradle-build-action@v3
+          distribution: 'temurin'
+      - uses: gradle/gradle-build-action@v3
         with:
           gradle-version: 8.7
           arguments: build
-          build-root-directory: app  # Путь к вашему проекту
-
+          build-root-directory: app
       - name: Publish code coverage
         uses: paambaati/codeclimate-action@v5.0.0
         env:
-          CC_TEST_REPORTER_ID: 704a66dc08884ed8b74dbc3554e744d7d308f5b943377695f184d72444f4ac29  # Рекомендуется хранить секрет в GitHub Secrets
-          JACOCO_SOURCE_PATH: ${{ github.workspace }}/app/src/main/java
+          CC_TEST_REPORTER_ID: 704a66dc08884ed8b74dbc3554e744d7d308f5b943377695f184d72444f4ac29
+          JACOCO_SOURCE_PATH: ${{github.workspace}}/app/src/main/java
         with:
           coverageCommand: make report
-          coverageLocations: ${{ github.workspace }}/app/build/reports/jacoco/test/jacocoTestReport.xml:jacoco
-
-      - name: Run tests
-        run: ./gradlew test  # Запускает ваши тесты Gradle
+          coverageLocations: ${{github.workspace}}/app/build/reports/jacoco/test/jacocoTestReport.xml:jacoco
