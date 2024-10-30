@@ -10,14 +10,15 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class MapSchemaTest {
 
     Validator validator = new Validator();
+    MapSchema schema = validator.map();
 
     @Test
     public void testMapValidation() {
-        MapSchema schema = validator.map();
         Map<String, Integer> map = new HashMap<>();
         Map<String, Integer> empty = new HashMap<>();
 
@@ -27,13 +28,48 @@ public class MapSchemaTest {
         map.put("Mango", 3);
         map.put("Huy", 0);
 
+
+        assertThat(schema.isValid(null)).isTrue();
+        assertThat(schema.isValid(new HashMap<>())).isTrue();
+
         // Тестирование обязательного поля
         schema.required();
         assertFalse(schema.isValid(null), "Null should not be valid");
         assertTrue(schema.isValid(map), "The map should be valid");
 
+        assertThat(schema.isValid(null)).isFalse();
+        assertThat(schema.isValid(new HashMap<>())).isTrue();
+
         //Тестирование ограничения на размер мапы
         schema.sizeof(2);
+
+        assertThat(schema.isValid(new HashMap<>())).isFalse();
+        Map<String, String> actual1 = new HashMap<>();
+        actual1.put("key1", "value1");
+        assertThat(schema.isValid(actual1)).isFalse();
+        actual1.put("key2", "value2");
+        assertThat(schema.isValid(actual1)).isTrue();
+
+        Map<String, BaseSchema<String>> schemas = new HashMap<>();
+        schemas.put("firstName", validator.string().required().contains("ya"));
+        schemas.put("lastName", validator.string().required().contains("ov"));
+        schema.shape(schemas);
+
+        Map<String, String> actual2 = new HashMap<>();
+        actual2.put("firstName", "Kolya");
+        actual2.put("lastName", "Ivanov");
+        assertThat(schema.isValid(actual2)).isTrue();
+
+        Map<String, String> actual3 = new HashMap<>();
+        actual3.put("firstName", "Maya");
+        actual3.put("lastName", "Krasnova");
+        assertThat(schema.isValid(actual3)).isTrue();
+
+        Map<String, String> actual4 = new HashMap<>();
+        actual4.put("firstName", "John");
+        actual4.put("lastName", "Jones");
+        //assertThat(schema.isValid(actual4)).isFalse();
+
         assertFalse(schema.isValid(map), "The number of key-value pairs must be equal to the specified one");
         assertFalse(schema.isValid(empty), "There are not enough elements on the map");
 
@@ -41,7 +77,6 @@ public class MapSchemaTest {
 
     @Test
     public void testMapWithoutRequired() {
-        MapSchema schema = validator.map();
 
         // Без обязательного поля
         assertTrue(schema.isValid(null), "Null should be valid when not required");
@@ -49,7 +84,6 @@ public class MapSchemaTest {
 
     @Test
     public void testHumanValidation() {
-        MapSchema schema = validator.map();
         // Создаем набор схем для проверки каждого ключа проверяемого объекта:
         Map<String, BaseSchema<String>> schemas = new HashMap<>();
 
