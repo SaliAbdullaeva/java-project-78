@@ -44,7 +44,6 @@ public final class StringSchemaTest {
 
         schema.contains("").contains("wha");
 
-        //assertThat(schema.isValid("")).isFalse();
         assertThat(schema.isValid(text)).isTrue();
     }
 
