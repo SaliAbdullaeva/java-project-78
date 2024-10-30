@@ -12,4 +12,4 @@ Supports validation of string and integer values, as well as maps (dictionaries)
 Allows the creation of custom validators by inheriting from the base class BaseSchema<T>.
 
 ### Usage example:
-![Usage Example](images/usage_example.png)
+![image](images/usage_example.png)
