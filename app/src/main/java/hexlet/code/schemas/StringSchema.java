@@ -5,8 +5,8 @@ import java.util.List;
 
 public class StringSchema extends BaseSchema<String> {
     private int minLength = 0;
-    private int maxLength = Integer.MAX_VALUE;
-    private List<String> contains = new ArrayList<>(); // Добавляем список для подстрок
+    //private final int maxLength = Integer.MAX_VALUE;
+    final List<String> contains = new ArrayList<>(); // Добавляем список для подстрок
 
     public StringSchema required() {
         super.required(); // вызываем метод из базового класса
@@ -39,14 +39,14 @@ public class StringSchema extends BaseSchema<String> {
             return false;
         }
 
-        if (value.length() > maxLength) {
+        /* if (value.length() > maxLength) {
             return false;
-        }
+        }*/
 
         // Проверка на наличие подстрок
         for (String substring : contains) {
             if (!value.contains(substring)) {
-                return false; // Если строка содержит подстроку, возвращаем false
+                return false; // Если строка не содержит подстроку, возвращаем false
             }
         }
         return true; // Если все проверки пройдены, возвращаем true
