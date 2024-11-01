@@ -42,6 +42,13 @@ public class StringSchema extends BaseSchema<String> {
         if (value.length() > maxLength) {
             return false;
         }
-        return true;
+
+        // Проверка на наличие подстрок
+        for (String substring : contains) {
+            if (!value.contains(substring)) {
+                return false; // Если строка содержит подстроку, возвращаем false
+            }
+        }
+        return true; // Если все проверки пройдены, возвращаем true
     }
 }
