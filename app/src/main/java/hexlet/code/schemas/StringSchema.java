@@ -6,7 +6,7 @@ import java.util.List;
 public final class StringSchema extends BaseSchema<String> {
     private int minLength = 0;
     //private final int maxLength = Integer.MAX_VALUE;
-    final List<String> contains = new ArrayList<>(); // Добавляем список для подстрок
+    private final List<String> contains = new ArrayList<>(); // Добавляем список для подстрок
 
     public StringSchema required() {
         super.required(); // вызываем метод из базового класса
