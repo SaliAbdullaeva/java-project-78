@@ -3,7 +3,7 @@ package hexlet.code.schemas;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StringSchema extends BaseSchema<String> {
+public final class StringSchema extends BaseSchema<String> {
     private int minLength = 0;
     //private final int maxLength = Integer.MAX_VALUE;
     final List<String> contains = new ArrayList<>(); // Добавляем список для подстрок
